@@ -25,7 +25,7 @@ its own shareable page (`/r/<run id>`).
 > There is no demo, sample or placeholder data anywhere in the app. A missing measurement stays `null`, shows up as a gap and
 > lowers evidence quality, so it is never treated as zero. Data that RYO marks `simulated` is never traded on: the token is `ABSTAIN`.
 
-- **Live app:** see the deployment URL at the top of the repo (Vercel)
+- **Live app:** https://tenbin-ryo-agent.vercel.app (health: `/api/health`, chain check: `/api/verify`)
 - **Source:** https://github.com/dukemawex/tenbin-ryo-agent
 
 ---
