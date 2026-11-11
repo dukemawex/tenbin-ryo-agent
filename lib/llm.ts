@@ -44,6 +44,12 @@ export function freeModels(): string[] {
   return list.filter((m) => m.endsWith(":free"));
 }
 
+/** OpenRouter keys start with "sk-or-"; anything else is treated as not configured rather than sent upstream. */
+export function modelKey(): string | null {
+  const k = process.env.OPENROUTER_API_KEY?.trim();
+  return k && /^sk-or-[\w-]{20,}$/.test(k) ? k : null;
+}
+
 export function extractJson(text: string): unknown {
   const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/);
   const body = fenced ? fenced[1] : text;
@@ -100,10 +106,10 @@ export function buildPrompt(table: EvidenceRow[], proposal: unknown): string {
 
 export async function review(table: EvidenceRow[], proposal: unknown, opts: { fetchImpl?: typeof fetch; timeoutMs?: number } = {}): Promise<Review> {
   const f = opts.fetchImpl ?? fetch;
-  const key = process.env.OPENROUTER_API_KEY;
+  const key = modelKey();
   const t0 = Date.now();
   const base: Review = { model: null, latency_ms: 0, attempts: [], action: null, bull_case: [], bear_case: [], rationale: [], would_change_mind: [], dropped_claims: 0, unverified_numbers: 0, raw_sha256: null, error: null };
-  if (!key) return { ...base, error: "OPENROUTER_API_KEY not set; decision stands on the deterministic policy alone" };
+  if (!key) return { ...base, error: "OPENROUTER_API_KEY missing or malformed; decision stands on the deterministic policy alone" };
   const map = new Map(table.map((r) => [r.id, r]));
   const prompt = buildPrompt(table, proposal);
   for (const model of freeModels()) {
