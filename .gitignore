@@ -1,0 +1,11 @@
+node_modules
+.next
+.env
+.env.local
+.vercel
+runs/*.json
+!runs/.gitkeep
+*.tsbuildinfo
+next-env.d.ts
+.env.*
+!.env.example
